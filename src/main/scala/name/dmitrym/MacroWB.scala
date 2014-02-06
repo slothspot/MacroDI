@@ -1,5 +1,13 @@
 package name.dmitrym
 
+object MacroProxy {
+  def hello: String = macro MacroWB.helloImpl
+}
+
 object MacroWB {
-  // placeholder for test macros
+  import scala.reflect.macros.Context
+
+  def helloImpl(c: Context) = c.universe.reify {
+    "hello"
+  }
 }
