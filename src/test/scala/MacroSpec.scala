@@ -1,7 +1,8 @@
-import com.typesafe.config.ConfigFactory
 import org.specs2.mutable._
 
 import name.dmitrym.MacroProxy
+
+import java.net.URLClassLoader
 
 class MacroSpec extends Specification {
   "The 'MacroProxy'" should {
@@ -14,54 +15,25 @@ class MacroSpec extends Specification {
     }
 
     "obtain engine of type ProdEngine for prod prefix" in {
-      MacroProxy.getEngineForConfig(
-        ConfigFactory.parseString(
-          """
-          prod.engine = name.dmitrym.ProdEngine
-          test.engine = name.dmitrym.TestEngine
-          default.engine = name.dmitrym.DefaultEngine
-          broken.engine = DoesNotExistEngine
-          """.stripMargin
-        ), "prod").getClass.getSimpleName must beEqualTo("ProdEngine")
+      MacroProxy.getEngineForConfig("bootstrap.conf", "prod")
+        .getClass.getSimpleName must beEqualTo("ProdEngine")
     }
 
     "obtain engine of type TestEngine for test prefix" in {
-      MacroProxy.getEngineForConfig(
-        ConfigFactory.parseString(
-          """
-          prod.engine = name.dmitrym.ProdEngine
-          test.engine = name.dmitrym.TestEngine
-          default.engine = name.dmitrym.DefaultEngine
-          broken.engine = DoesNotExistEngine
-          """.stripMargin
-        ), "test").getClass.getSimpleName must beEqualTo("TestEngine")
+      MacroProxy.getEngineForConfig("bootstrap.conf", "test")
+        .getClass.getSimpleName must beEqualTo("TestEngine")
     }
 
     "obtain engine of type DefaultEngine for default prefix" in {
-      MacroProxy.getEngineForConfig(
-        ConfigFactory.parseString(
-          """
-          prod.engine = name.dmitrym.ProdEngine
-          test.engine = name.dmitrym.TestEngine
-          default.engine = name.dmitrym.DefaultEngine
-          broken.engine = DoesNotExistEngine
-          """.stripMargin
-        ), "default").getClass.getSimpleName must beEqualTo("DefaultEngine")
+      MacroProxy.getEngineForConfig("bootstrap.conf", "default")
+        .getClass.getSimpleName must beEqualTo("DefaultEngine")
     }
 
     /**
      * this test will fail build with s"Configuration ${cfgPrefix} doesn't exist" message
      */
 //    "must fail a build for doesntexist prefix" in {
-//      MacroProxy.getEngineForConfig(
-//        ConfigFactory.parseString(
-//          """
-//          prod.engine = name.dmitrym.ProdEngine
-//          test.engine = name.dmitrym.TestEngine
-//          default.engine = name.dmitrym.DefaultEngine
-//          broken.engine = DoesNotExistEngine
-//          """.stripMargin
-//        ), "doesntexist")
+//      MacroProxy.getEngineForConfig("bootstrap.conf", "doesntexist")
 //      failure("Not expected to compile and run")
 //    }
 
@@ -69,16 +41,7 @@ class MacroSpec extends Specification {
      * this test will fail build with s"Configuration property ${engineCfgPath} doesn't exist" message
      */
 //    "must fail a build for invalid prefix" in {
-//      MacroProxy.getEngineForConfig(
-//        ConfigFactory.parseString(
-//          """
-//          prod.engine = name.dmitrym.ProdEngine
-//          test.engine = name.dmitrym.TestEngine
-//          default.engine = name.dmitrym.DefaultEngine
-//          broken.engine = DoesNotExistEngine
-//          invalid.engne = default.engine
-//          """.stripMargin
-//        ), "invalid")
+//      MacroProxy.getEngineForConfig("bootstrap.conf", "invalid")
 //      failure("Not expected to compile and run")
 //    }
 
@@ -86,16 +49,7 @@ class MacroSpec extends Specification {
      * this test will fail build with s"${engineTypeName} doesn't exist in project class path" message
      */
 //    "must fail a build for broken prefix" in {
-//      MacroProxy.getEngineForConfig(
-//        ConfigFactory.parseString(
-//          """
-//          prod.engine = name.dmitrym.ProdEngine
-//          test.engine = name.dmitrym.TestEngine
-//          default.engine = name.dmitrym.DefaultEngine
-//          broken.engine = DoesNotExistEngine
-//          invalid.engne = default.engine
-//          """.stripMargin
-//        ), "broken")
+//      MacroProxy.getEngineForConfig("bootstrap.conf", "broken")
 //      failure("Not expected to compile and run")
 //    }
   }

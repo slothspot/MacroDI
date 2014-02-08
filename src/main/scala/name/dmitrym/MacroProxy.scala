@@ -6,5 +6,5 @@ object MacroProxy {
   def hello: String = macro MacroWB.helloImpl
   def getInt: Integer = macro MacroWB.codegenIntSampleImpl
 
-  def getEngineForConfig(cfg: Config, prefix: String):Engine = macro MacroWB.getEngineForConfig
+  def getEngineForConfig(cfgResource: String, prefix: String):Engine = macro MacroWB.getEngineForConfig
 }
