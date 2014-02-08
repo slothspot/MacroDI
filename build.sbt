@@ -1,6 +1,6 @@
 organization := "name.dmitrym"
 
-name := "MacroWB"
+name := "MacroDI"
 
 version := "SNAPSHOT"
 
